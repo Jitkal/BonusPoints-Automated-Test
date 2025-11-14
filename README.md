@@ -66,8 +66,14 @@ After authentication is saved, run the remaining post-related tests normally.
 ## 📚 References
 
 ### 📘 Learning Resources
-- **Playwright JavaScript Tutorial Playlist**  
+- **Playwright JavaScript Tutorial Playlist**  <br>
   https://www.youtube.com/playlist?list=PLL34mf651faPMrUKrJP5HFIBeihgmGQTX
 
+  
+### 📘 Official Playwright Documentation
+- **Playwright Locator Quick Guide**  <br>
+  https://playwright.dev/docs/locators#quick-guide
+
+  
 ---
 
