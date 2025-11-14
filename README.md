@@ -3,7 +3,9 @@
 This project demonstrates automated testing of Facebook’s login and posting functionalities using **Playwright**.  
 All tests are executed on **web browser only**, as required by the assignment.
 
+
 ---
+
 
 ## 🎯 Objectives
 - Login to Facebook and verify login is correct
@@ -31,7 +33,6 @@ All tests are executed on **web browser only**, as required by the assignment.
 Some login test cases may trigger Facebook's **CAPTCHA**.  
 If CAPTCHA appears, please solve it **manually and quickly**, since the test can timeout.
 
----
 
 ### 2. Save authenticated session
 Before running posting tests, execute the `authenticate` test case in **Post.spec.js**.
@@ -42,7 +43,6 @@ This will generate a `storageState.json` file that:
 - reduces the chance of CAPTCHA  
 - speeds up the post test cases  
 
----
 
 ### 3. Run posting test cases
 After authentication is saved, run the remaining post-related tests normally.
