@@ -8,6 +8,18 @@ async function captchaCheck(page) {
   }
 }
 
+test('case1 : Normal Login', async ({ page }) => {
+  await page.goto('https://www.facebook.com/');
+  await page.locator("xpath=//input[@id='email']").fill('main.test.automate@gmail.com');
+  await page.locator("xpath=//input[@id='pass']").fill('Password_1');
+  await page.getByRole('button', { name: 'Log in' }).click();
+
+  await captchaCheck(page)
+  await page.waitForSelector('[aria-label="Create a post"]', { timeout: 180000 });
+  await expect(page.getByRole('button', { name: 'Log in' })).toHaveCount(0);
+});
+
+
 const passwordDataTest =[
   {
     caseName:'Login with incorrect password',
@@ -34,18 +46,6 @@ const passwordDataTest =[
     password:'Password_1    '
   }
 ]
-
-test('case1 : Normal Login', async ({ page }) => {
-  await page.goto('https://www.facebook.com/');
-  await page.locator("xpath=//input[@id='email']").fill('main.test.automate@gmail.com');
-  await page.locator("xpath=//input[@id='pass']").fill('Password_1');
-  await page.getByRole('button', { name: 'Log in' }).click();
-
-  await captchaCheck(page)
-  await page.waitForSelector('[aria-label="Create a post"]', { timeout: 180000 });
-  await expect(page.getByRole('button', { name: 'Log in' })).toHaveCount(0);
-});
-
 passwordDataTest.forEach(({ caseName, password }) => {
   test(`Password Test: ${caseName}`, async ({ page }) => {
       await page.goto('https://www.facebook.com/');
@@ -131,69 +131,109 @@ passwordDataTest.forEach(({ caseName, password }) => {
 //   await expect(page.getByText("The password that you've entered is incorrect." )).toHaveCount(1);
 // });
 
+const emailDataTest =[
+  {
+    caseName:'Login with incorrect email but correct password',
+    email:'main.test.aut2222te@gmail.com'
+  },
+  {
+    caseName:'Login with incorrect email syntax but correct password',
+    email:'main.test.automate@gml.com'
+  },
+  {
+    // facebook error
+    caseName:'Login with correct email but have 1 spacebar at front and correct password',
+    email:' main.test.automate@gmail.com'
+  },
+  {// facebook error
+    caseName:'Login with correct email but have exceed spacebar at front and correct password',
+    email:'     main.test.automate@gmail.com'
+  },
+  {// facebook error
+    caseName:'Login with correct email but have exceed spacebar at middle and correct password',
+    email:'main.tes    t.autom     ate@gmail.com'
+  },
+  {
+    caseName:'Login with correct email but have exceed spacebar at the end and correct password',
+    email:'main.test.automate@gmail.com          '
+  },
+]
+emailDataTest.forEach(({ caseName, email }) => {
+  test(`Email Test: ${caseName}`, async ({ page }) => {
+      await page.goto('https://www.facebook.com/');
+      await page.locator('#email').fill(email);
+      await page.locator('#pass').fill('Password_1');
+      await page.getByRole('button', { name: 'Log in' }).click();
 
-test('case3.1 : Login with incorrect email but correct password', async ({ page }) => {
+      await captchaCheck(page);
 
-  await page.goto('https://www.facebook.com/');
-  await page.locator("xpath=//input[@id='email']").fill('main.test.aut2222te@gmail.com')
-  await page.locator("xpath=//input[@id='pass']").fill('Password_1')
-  await page.getByRole('button', { name: 'Log in' }).click()
-
-  await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
+      await page.waitForSelector("//div[contains(@class, 'login_form')]", { timeout: 300000 });
+      await expect(page.getByText("The email address you entered isn't connected to an account.")).toHaveCount(1);
+    }, { timeout: 360000 });
 });
 
-test('case3.2 : Login with incorrect email syntax but correct password', async ({ page }) => {
+// test('case3.1 : Login with incorrect email but correct password', async ({ page }) => {
 
-  await page.goto('https://www.facebook.com/');
-  await page.locator("xpath=//input[@id='email']").fill('main.test.automate@gml.com')
-  await page.locator("xpath=//input[@id='pass']").fill('Password_1')
-  await page.getByRole('button', { name: 'Log in' }).click()
+//   await page.goto('https://www.facebook.com/');
+//   await page.locator("xpath=//input[@id='email']").fill('main.test.aut2222te@gmail.com')
+//   await page.locator("xpath=//input[@id='pass']").fill('Password_1')
+//   await page.getByRole('button', { name: 'Log in' }).click()
 
-  await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
-});
+//   await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
+// });
 
-// facebook error
-test('case3.3 : Login with correct email but have 1 spacebar at front and correct password', async ({ page }) => {
+// test('case3.2 : Login with incorrect email syntax but correct password', async ({ page }) => {
 
-  await page.goto('https://www.facebook.com/');
-  await page.locator("xpath=//input[@id='email']").fill(' main.test.automate@gmail.com')
-  await page.locator("xpath=//input[@id='pass']").fill('Password_1')
-  await page.getByRole('button', { name: 'Log in' }).click()
+//   await page.goto('https://www.facebook.com/');
+//   await page.locator("xpath=//input[@id='email']").fill('main.test.automate@gml.com')
+//   await page.locator("xpath=//input[@id='pass']").fill('Password_1')
+//   await page.getByRole('button', { name: 'Log in' }).click()
 
-  await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
-});
+//   await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
+// });
 
-// facebook error
-test('case3.4 : Login with correct email but have exceed spacebar at front and correct password', async ({ page }) => {
+// // facebook error
+// test('case3.3 : Login with correct email but have 1 spacebar at front and correct password', async ({ page }) => {
 
-  await page.goto('https://www.facebook.com/');
-  await page.locator("xpath=//input[@id='email']").fill('     main.test.automate@gmail.com')
-  await page.locator("xpath=//input[@id='pass']").fill('Password_1')
-  await page.getByRole('button', { name: 'Log in' }).click()
+//   await page.goto('https://www.facebook.com/');
+//   await page.locator("xpath=//input[@id='email']").fill(' main.test.automate@gmail.com')
+//   await page.locator("xpath=//input[@id='pass']").fill('Password_1')
+//   await page.getByRole('button', { name: 'Log in' }).click()
 
-  await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
-});
+//   await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
+// });
 
-// facebook error
-test('case3.5 : Login with correct email but have exceed spacebar at middle and correct password', async ({ page }) => {
+// // facebook error
+// test('case3.4 : Login with correct email but have exceed spacebar at front and correct password', async ({ page }) => {
 
-  await page.goto('https://www.facebook.com/');
-  await page.locator("xpath=//input[@id='email']").fill('main.tes    t.autom     ate@gmail.com')
-  await page.locator("xpath=//input[@id='pass']").fill('Password_1')
-  await page.getByRole('button', { name: 'Log in' }).click()
+//   await page.goto('https://www.facebook.com/');
+//   await page.locator("xpath=//input[@id='email']").fill('     main.test.automate@gmail.com')
+//   await page.locator("xpath=//input[@id='pass']").fill('Password_1')
+//   await page.getByRole('button', { name: 'Log in' }).click()
 
-  await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
-});
+//   await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
+// });
 
-test('case3.6 : Login with correct email but have exceed spacebar at the end and correct password', async ({ page }) => {
+// // facebook error
+// test('case3.5 : Login with correct email but have exceed spacebar at middle and correct password', async ({ page }) => {
 
-  await page.goto('https://www.facebook.com/');
-  await page.locator("xpath=//input[@id='email']").fill('main.test.automate@gmail.com          ')
-  await page.locator("xpath=//input[@id='pass']").fill('Password_1')
-  await page.getByRole('button', { name: 'Log in' }).click()
+//   await page.goto('https://www.facebook.com/');
+//   await page.locator("xpath=//input[@id='email']").fill('main.tes    t.autom     ate@gmail.com')
+//   await page.locator("xpath=//input[@id='pass']").fill('Password_1')
+//   await page.getByRole('button', { name: 'Log in' }).click()
 
-  await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
-});
+//   await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
+// });
+
+// test('case3.6 : Login with correct email but have exceed spacebar at the end and correct password', async ({ page }) => {
+
+//   await page.goto('https://www.facebook.com/');
+//   await page.locator("xpath=//input[@id='email']").fill('main.test.automate@gmail.com          ')
+//   await page.locator("xpath=//input[@id='pass']").fill('Password_1')
+//   await page.getByRole('button', { name: 'Log in' }).click()
+
+//   await expect(page.getByText("The email address you entered isn't connected to an account." )).toHaveCount(1);
+// });
 
 
 
