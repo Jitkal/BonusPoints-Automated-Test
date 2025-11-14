@@ -1,5 +1,20 @@
 const {test,expect}=require('@playwright/test')
 
+test('authenticate', async ({ page }) => {
+  await page.goto('https://www.facebook.com/');
+  await page.locator("#email").fill('main.test.automate@gmail.com');
+  await page.locator("#pass").fill('Password_1');
+  await page.getByRole('button', { name: 'Log in' }).click();
+
+  await page.waitForSelector("//div[@aria-label='Create a post']", { timeout: 300000 });
+
+  // รอให้ login เสร็จ
+  // await page.waitForURL('**/facebook.com/**', { timeout: 60000 });
+
+  // บันทึก session
+  await page.context().storageState({ path: 'storageState.json' });
+});
+
 async function captchaCheck(page) {
   const captcha = page.getByText("I'm not a robot", { exact: false });
   const isCaptchaVisible = await captcha.isVisible().catch(() => false);
@@ -15,12 +30,6 @@ async function captchaCheck(page) {
 test('case1.1 : Normal Post', async ({ page }) => {
 
   await page.goto('https://www.facebook.com/');
-  await page.locator("xpath=//input[@id='email']").fill('main.test.automate@gmail.com')
-  await page.locator("xpath=//input[@id='pass']").fill('Password_1')
-  await page.getByRole('button', { name: 'Log in' }).click()
-
-  await captchaCheck(page)
-  await page.waitForSelector("//div[@aria-label='Create a post']", { timeout: 300000 });
   
   await page.locator("xpath=(//div[@role='main']//div[@aria-label='Create a post']//div[@role='button'])[1]").click()
   await page.locator("xpath=//div[@role='dialog']//div[@role='textbox']").fill('test post1')
