@@ -1,4 +1,4 @@
-# Bonus Points Assignment – Automated Facebook Post Test
+# Bonus Points – Automated Test
 
 This project demonstrates automated testing of Facebook’s login and posting functionalities using **Playwright**.  
 All tests are executed on **web browser only**, as required by the assignment.
