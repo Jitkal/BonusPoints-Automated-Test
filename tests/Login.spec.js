@@ -15,9 +15,9 @@ test('case1 : Normal Login', async ({ page }) => {
   await page.getByRole('button', { name: 'Log in' }).click();
 
   await captchaCheck(page)
-  await page.waitForSelector('[aria-label="Create a post"]', { timeout: 180000 });
+  await page.waitForSelector('[aria-label="Create a post"]', { timeout: 300000 });
   await expect(page.getByRole('button', { name: 'Log in' })).toHaveCount(0);
-});
+}, { timeout: 360000 });
 
 
 const passwordDataTest =[
@@ -156,6 +156,10 @@ const emailDataTest =[
   {
     caseName:'Login with correct email but have exceed spacebar at the end and correct password',
     email:'main.test.automate@gmail.com          '
+  },
+  {
+    caseName:'Login with facebook name (not Email)',
+    email:'Main Test'
   },
 ]
 emailDataTest.forEach(({ caseName, email }) => {
